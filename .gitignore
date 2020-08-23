@@ -1,0 +1,5 @@
+/data/grafana/*
+!/data/grafana/.gitkeep
+/data/prometheus/*
+!/data/prometheus/.gitkeep
+.service

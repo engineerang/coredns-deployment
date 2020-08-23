@@ -1,0 +1,16 @@
+example.org:53 {
+    file /etc/coredns/db.example.org
+    prometheus
+    whoami
+    log
+    errors
+}
+
+.:53 {
+    forward . 1.1.1.1 8.8.8.8
+    prometheus
+    whoami
+    cache
+    log
+    errors
+}

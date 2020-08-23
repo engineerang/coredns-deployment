@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: coredns-deployment
+spec:
+  containers:
+  - name: coredns
+    image: coredns/coredns
+    restartPolicy: Always
+    args: [ "-conf", "/etc/coredns/Corefile" ]
+    ports:
+    - containerPort: 53
+      hostPort: 53
+      protocol: udp
+      name: dns-udp
+    - containerPort: 53
+      hostPort: 53
+      protocol: tcp
+      name: dns
+    - containerPort: 9153
+      protocol: tcp
+      name: prometheus
+    volumeMounts:
+    - mountPath: /etc/coredns
+      name: coredns-config
+  - name: prometheus
+    image: prom/prometheus
+    restartPolicy: Always
+    securityContext:
+      runAsGroup: 0
+      runAsNonRoot: false
+      runAsUser: 0
+    args:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.path=/prometheus/"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    ports:
+    - containerPort: 9090
+      protocol: tcp
+      name: http
+    volumeMounts:
+    - mountPath: /etc/prometheus/
+      name: prom-config
+    - mountPath: /prometheus/
+      name: prom-data
+  - name: grafana
+    image: grafana/grafana
+    restartPolicy: Always
+    securityContext:
+      runAsGroup: 0
+      runAsNonRoot: false
+      runAsUser: 0
+    ports:
+    - containerPort: 3000
+      hostPort: 3000
+      protocol: tcp
+      name: http
+    volumeMounts:
+    - mountPath: /etc/grafana/provisioning/
+      name: graf-config
+    - mountPath: /var/lib/grafana
+      name: graf-data
+  volumes:
+  - name: coredns-config
+    hostPath:
+      # directory location on host
+      path: ./config/coredns
+      # this field is optional
+      type: Directory
+  - name: prom-config
+    hostPath:
+      path: ./config/prometheus
+      type: Directory
+  - name: prom-data
+    hostPath:
+      path: ./data/prometheus
+      type: Directory
+  - name: graf-config
+    hostPath:
+      path: ./config/grafana/provisioning
+      type: Directory
+  - name: graf-data
+    hostPath:
+      path: ./data/grafana
+      type: Directory
