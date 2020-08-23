@@ -25,3 +25,13 @@ make status # Use the systemd service file to get the status of the pod
 make clean # Remove the systemd service files
 make undeploy # Remove the pod and systemd service files
 ````
+# Services
+## Grafana & Prometheus
+This deployment make use of CoreDNS's prometheus metric endpoint browse to URL ```<ip_address>:3000``` and use admin:admin to login
+
+> **NOTE** If you find you cannot hit the URL you may run the following:
+```
+sudo sysctl net.ipv4.ip_unprivileged_port_start=0
+systemctl --user restart pod-coredns-deployment
+```
+
