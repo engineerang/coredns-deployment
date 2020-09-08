@@ -4,7 +4,7 @@ A podman deployment of CoreDNS, Prometheus, &amp; Grafana using kubeconfig
 # Getting Started
 
 ## Installation
-You will need podman, so head over to [Podman.io](https://podman.io/getting-started/installation.html) and install for your distro.
+You will need podman (>=2.0), so head over to [Podman.io](https://podman.io/getting-started/installation.html) and install for your distro.
 
 ## Quickstart
 ````bash
